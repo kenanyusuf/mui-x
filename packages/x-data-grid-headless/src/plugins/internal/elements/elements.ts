@@ -19,7 +19,8 @@ type GridProps = typeof gridStaticProps & {
 };
 
 const containerStaticProps = {
-  role: 'presentation',
+  // TODO: Since the container is now the root element, we don't need to set the role to presentation.
+  // role: 'presentation',
 } as const;
 
 type ContainerProps = typeof containerStaticProps & {

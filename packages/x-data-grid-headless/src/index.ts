@@ -32,3 +32,6 @@ export type {
   ColumnsPluginOptions,
 } from './plugins/internal/columns/columns';
 export type { IntlOptions } from './plugins/internal';
+
+// Component
+export * from './data-grid';

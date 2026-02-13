@@ -91,7 +91,7 @@ export type VirtualizationPlugin = Plugin<
   {}
 >;
 
-const DEFAULT_ROW_HEIGHT = 52;
+const DEFAULT_ROW_HEIGHT = 40;
 const DEFAULT_COLUMN_WIDTH = 100;
 
 function getInitialVirtualizationState(params: VirtualizationOptions): VirtualizationState {

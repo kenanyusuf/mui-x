@@ -1,0 +1,111 @@
+.Root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: 100%;
+  height: 500px;
+  border: 1px solid var(--color-gray-200);
+  background-color: white;
+  border-radius: 8px;
+}
+
+.Viewport {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: none;
+  overflow: auto;
+}
+
+.Content {
+  position: relative; /* Necessary for scrolling to work */
+}
+
+.Header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background-color: white;
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+:is(.HeaderRow, .Row) {
+  box-sizing: border-box;
+  display: flex;
+  height: var(--data-grid-row-height);
+}
+
+:is(.HeaderCell, .Cell) {
+  box-sizing: border-box;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  width: var(--data-grid-cell-width);
+  padding: 8px 12px;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--color-gray-900);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  cursor: default;
+}
+
+:is(.HeaderCell, .Cell) svg {
+  flex-shrink: 0;
+}
+
+.HeaderCell {
+  background-color: var(--color-gray-50);
+  color: var(--color-gray-600);
+  user-select: none;
+}
+
+.HeaderCell:active {
+  background-color: var(--color-gray-100);
+}
+
+/* :is(.HeaderCell, .Cell):not(:last-child) {
+  border-right: 1px solid var(--color-gray-200);
+} */
+
+.Row:not(:last-child) .Cell {
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.SortIndicator {
+  margin-bottom: -4px;
+  margin-left: auto;
+}
+
+.Badge {
+  padding: 0 4px;
+  height: 20px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  background-color: var(--color-gray-100);
+  color: var(--color-gray-600);
+}
+
+.Avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: var(--color-gray-200);
+  color: var(--color-gray-500);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.Link {
+  color: var(--color-blue);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
