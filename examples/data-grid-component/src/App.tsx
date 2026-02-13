@@ -142,6 +142,7 @@ function Avatar({ name }: { name: string }) {
 function ChevronUpIcon() {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       width="16"
       height="16"
@@ -160,6 +161,7 @@ function ChevronUpIcon() {
 function ChevronDownIcon() {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       width="16"
       height="16"
@@ -178,6 +180,7 @@ function ChevronDownIcon() {
 function BaselineIcon() {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       width="16"
       height="16"
@@ -198,6 +201,7 @@ function BaselineIcon() {
 function HashIcon() {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       width="16"
       height="16"
@@ -219,6 +223,7 @@ function HashIcon() {
 function UserIcon() {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       width="16"
       height="16"
@@ -238,6 +243,7 @@ function UserIcon() {
 function CalendarIcon() {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       width="16"
       height="16"
@@ -259,6 +265,7 @@ function CalendarIcon() {
 function CircleDashed() {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       width="16"
       height="16"
@@ -284,6 +291,7 @@ function CircleDashed() {
 function ListIcon() {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       width="16"
       height="16"
