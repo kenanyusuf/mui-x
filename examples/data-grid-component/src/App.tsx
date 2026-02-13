@@ -19,6 +19,7 @@ function App() {
     rows,
     columns,
     plugins,
+    sorting: { multiSort: false },
   });
   return (
     <DataGrid.Root className={styles.Root} grid={grid}>
