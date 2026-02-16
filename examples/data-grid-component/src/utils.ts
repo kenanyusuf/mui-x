@@ -149,6 +149,6 @@ export function generateColumns(): ColumnDef<RowData>[] {
     },
     { id: 'rating', field: 'rating' as keyof RowData, header: 'Rating', size: 120 },
     { id: 'projects', field: 'projects' as keyof RowData, header: 'Projects', size: 120 },
-    { id: 'skills', field: 'skills' as keyof RowData, header: 'Skills', size: 240 },
+    { id: 'skills', field: 'skills' as keyof RowData, header: 'Skills', size: 250 },
   ];
 }

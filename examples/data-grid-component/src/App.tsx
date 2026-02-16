@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { DataGrid, useDataGrid } from '@mui/x-data-grid-headless';
+import { columnsPlugin, DataGrid, useDataGrid } from '@mui/x-data-grid-headless';
 import { paginationPlugin } from '@mui/x-data-grid-headless/plugins/pagination';
 import {
   ColumnToRender,
@@ -7,6 +7,7 @@ import {
 } from '@mui/x-data-grid-headless/plugins/virtualization';
 import { type GridSortDirection, sortingPlugin } from '@mui/x-data-grid-headless/plugins/sorting';
 
+import { Button, Popover, Select, Toolbar } from '@base-ui/react';
 import { generateSampleData, generateColumns } from './utils';
 import styles from './index.module.css';
 
@@ -14,44 +15,155 @@ const plugins = [sortingPlugin, paginationPlugin, virtualizationPlugin] as const
 const rows = generateSampleData(100);
 const columns = generateColumns();
 
+const directionItems = [
+  { label: 'Ascending', value: 'asc' },
+  { label: 'Descending', value: 'desc' },
+];
+
 function App() {
   const grid = useDataGrid({
     rows,
     columns,
     plugins,
-    sorting: { multiSort: false },
   });
+  const sortModel = grid.use(sortingPlugin.selectors.model);
+  const visibleColumns = grid.use(columnsPlugin.selectors.visibleColumns);
+
+  const getColumnHeader = (field: string) => grid.api.columns.get(field)?.header ?? field;
+
+  const columnItems = visibleColumns
+    .filter((col) => col.sortable !== false)
+    .map((col) => ({
+      label: col.header,
+      value: col.id,
+    }));
+
   return (
-    <DataGrid.Root className={styles.Root} grid={grid}>
-      <DataGrid.Viewport className={styles.Viewport}>
-        <DataGrid.Header className={styles.Header}>
-          <DataGrid.HeaderRow className={styles.HeaderRow}>
-            {(cell) => (
-              <DataGrid.HeaderCell key={cell.column.id} className={styles.HeaderCell}>
-                {getHeaderCellIcon(cell.column)}
-                {cell.value}
-                <DataGrid.SortIndicator className={styles.SortIndicator}>
-                  {(direction) => getSortIndicatorIcon(direction)}
-                </DataGrid.SortIndicator>
-              </DataGrid.HeaderCell>
-            )}
-          </DataGrid.HeaderRow>
-        </DataGrid.Header>
-        <DataGrid.Content className={styles.Content}>
-          <DataGrid.Body>
-            {(row) => (
-              <DataGrid.Row key={row.id} className={styles.Row}>
-                {(cell) => (
-                  <DataGrid.Cell key={cell.column.id} className={styles.Cell}>
-                    {formatCellValue(cell)}
-                  </DataGrid.Cell>
-                )}
-              </DataGrid.Row>
-            )}
-          </DataGrid.Body>
-        </DataGrid.Content>
-      </DataGrid.Viewport>
-    </DataGrid.Root>
+    <div className={styles.App}>
+      <Toolbar.Root className={styles.Toolbar}>
+        <Popover.Root>
+          <Toolbar.Button className={styles.Button} render={<Popover.Trigger />}>
+            <ArrowDownUpIcon />
+            Sort
+          </Toolbar.Button>
+          <Popover.Portal>
+            <Popover.Positioner className={styles.PopoverPositioner} sideOffset={4} align="start">
+              <Popover.Popup className={styles.PopoverPopup} aria-label="Sort options">
+                <div className={styles.SortRow}>
+                  <Select.Root items={columnItems}>
+                    <Select.Trigger className={styles.SelectTrigger}>
+                      <Select.Value className={styles.SelectValue} placeholder="Select column" />
+                      <Select.Icon className={styles.SelectIcon}>
+                        <ChevronUpDownIcon />
+                      </Select.Icon>
+                    </Select.Trigger>
+                    <Select.Portal>
+                      <Select.Positioner className={styles.SelectPositioner} sideOffset={8}>
+                        <Select.Popup className={styles.SelectPopup}>
+                          <Select.ScrollUpArrow className={styles.SelectScrollArrow} />
+                          <Select.List className={styles.SelectList}>
+                            {columnItems.map(({ label, value }) => (
+                              <Select.Item key={label} value={value} className={styles.SelectItem}>
+                                <Select.ItemIndicator className={styles.SelectItemIndicator}>
+                                  <CheckIcon />
+                                </Select.ItemIndicator>
+                                <Select.ItemText className={styles.SelectItemText}>
+                                  {label}
+                                </Select.ItemText>
+                              </Select.Item>
+                            ))}
+                          </Select.List>
+                          <Select.ScrollDownArrow className={styles.SelectScrollArrow} />
+                        </Select.Popup>
+                      </Select.Positioner>
+                    </Select.Portal>
+                  </Select.Root>
+
+                  <Select.Root items={directionItems} defaultValue={directionItems[0].value}>
+                    <Select.Trigger className={styles.SelectTrigger}>
+                      <Select.Value className={styles.SelectValue} />
+                      <Select.Icon className={styles.SelectIcon}>
+                        <ChevronUpDownIcon />
+                      </Select.Icon>
+                    </Select.Trigger>
+                    <Select.Portal>
+                      <Select.Positioner className={styles.SelectPositioner} sideOffset={8}>
+                        <Select.Popup className={styles.SelectPopup}>
+                          <Select.ScrollUpArrow className={styles.SelectScrollArrow} />
+                          <Select.List className={styles.SelectList}>
+                            {directionItems.map(({ label, value }) => (
+                              <Select.Item key={label} value={value} className={styles.SelectItem}>
+                                <Select.ItemIndicator className={styles.SelectItemIndicator}>
+                                  <CheckIcon />
+                                </Select.ItemIndicator>
+                                <Select.ItemText className={styles.SelectItemText}>
+                                  {label}
+                                </Select.ItemText>
+                              </Select.Item>
+                            ))}
+                          </Select.List>
+                          <Select.ScrollDownArrow className={styles.SelectScrollArrow} />
+                        </Select.Popup>
+                      </Select.Positioner>
+                    </Select.Portal>
+                  </Select.Root>
+                </div>
+
+                <Button className={styles.Button}>
+                  <PlusIcon />
+                  Add sort
+                </Button>
+                {/* <div className={styles.SortColumnList}>
+                  {visibleColumns
+                    .filter((col) => col.sortable !== false)
+                    .map((col) => (
+                      <Button
+                        key={col.id}
+                        className={styles.Button}
+                        onClick={() =>
+                          grid.api.sorting.sortColumn(col.field as string, undefined, true)
+                        }
+                      >
+                        <PlusIcon />
+                        {col.header ?? col.id}
+                      </Button>
+                    ))}
+                </div> */}
+              </Popover.Popup>
+            </Popover.Positioner>
+          </Popover.Portal>
+        </Popover.Root>
+      </Toolbar.Root>
+
+      <DataGrid.Root className={styles.Root} grid={grid}>
+        <DataGrid.Viewport className={styles.Viewport}>
+          <DataGrid.Header className={styles.Header}>
+            <DataGrid.HeaderRow className={styles.HeaderRow}>
+              {(cell) => (
+                <DataGrid.HeaderCell className={styles.HeaderCell}>
+                  {getHeaderCellIcon(cell.column)}
+                  {cell.value}
+                  <DataGrid.SortIndicator className={styles.SortIndicator}>
+                    {(direction) => getSortIndicatorIcon(direction)}
+                  </DataGrid.SortIndicator>
+                </DataGrid.HeaderCell>
+              )}
+            </DataGrid.HeaderRow>
+          </DataGrid.Header>
+          <DataGrid.Content className={styles.Content}>
+            <DataGrid.Body>
+              {(_row) => (
+                <DataGrid.Row className={styles.Row}>
+                  {(cell) => (
+                    <DataGrid.Cell className={styles.Cell}>{formatCellValue(cell)}</DataGrid.Cell>
+                  )}
+                </DataGrid.Row>
+              )}
+            </DataGrid.Body>
+          </DataGrid.Content>
+        </DataGrid.Viewport>
+      </DataGrid.Root>
+    </div>
   );
 }
 
@@ -149,7 +261,7 @@ function ChevronUpIcon() {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth="2.25"
       strokeLinecap="round"
       strokeLinejoin="round"
     >
@@ -168,7 +280,7 @@ function ChevronDownIcon() {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth="2.25"
       strokeLinecap="round"
       strokeLinejoin="round"
     >
@@ -187,7 +299,7 @@ function BaselineIcon() {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth="2.25"
       strokeLinecap="round"
       strokeLinejoin="round"
     >
@@ -208,7 +320,7 @@ function HashIcon() {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth="2.25"
       strokeLinecap="round"
       strokeLinejoin="round"
     >
@@ -230,7 +342,7 @@ function UserIcon() {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth="2.25"
       strokeLinecap="round"
       strokeLinejoin="round"
     >
@@ -250,7 +362,7 @@ function CalendarIcon() {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth="2.25"
       strokeLinecap="round"
       strokeLinejoin="round"
     >
@@ -272,7 +384,7 @@ function CircleDashed() {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth="2.25"
       strokeLinecap="round"
       strokeLinejoin="round"
     >
@@ -298,7 +410,7 @@ function ListIcon() {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth="2.25"
       strokeLinecap="round"
       strokeLinejoin="round"
     >
@@ -308,6 +420,87 @@ function ListIcon() {
       <path d="M8 5h13" />
       <path d="M8 12h13" />
       <path d="M8 19h13" />
+    </svg>
+  );
+}
+
+function ArrowDownUpIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="m3 16 4 4 4-4" />
+      <path d="M7 20V4" />
+      <path d="m21 8-4-4-4 4" />
+      <path d="M17 4v16" />
+    </svg>
+  );
+}
+
+function PlusIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M5 12h14" />
+      <path d="M12 5v14" />
+    </svg>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M20 6 9 17l-5-5" />
+    </svg>
+  );
+}
+
+function ChevronUpDownIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="m7 15 5 5 5-5" />
+      <path d="m7 9 5-5 5 5" />
     </svg>
   );
 }
